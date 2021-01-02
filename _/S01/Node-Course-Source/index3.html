@@ -1,0 +1,11 @@
+<h1> Hello World</h1>
+<script>
+function message(greeting,callback){
+    console.log(greeting);
+    callback();
+}
+function afterward(){
+    console.log('Good Bye');
+}
+message('Hello',afterward);
+</script>

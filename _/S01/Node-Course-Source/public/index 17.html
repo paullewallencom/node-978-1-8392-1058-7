@@ -1,0 +1,12 @@
+<h1>Browser Side JavaScript</h1>
+<input name="user" type="text" value="Laurence">
+<button class="btn">Roll</button>
+<script src='/socket.io/socket.io.js'></script>
+<script>
+    const socket = io();
+    const btn = document.querySelector('.btn');
+    const user = document.querySelector('input[name="user"]');
+    btn.addEventListener('click', function () {
+        socket.emit('player', user.value);
+    })
+</script>

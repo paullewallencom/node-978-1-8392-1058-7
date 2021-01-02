@@ -1,0 +1,47 @@
+<h1 class="user">Welcome</h1>
+<h3 class="message"></h3>
+<div class="output"></div>
+<input name="user" type="text" value="user">
+<button class="btn1">Join</button>
+<button class="btn2" style="display: none">Roll</button>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    const output = document.querySelector('.output');
+    const message = document.querySelector('.message');
+    const user = document.querySelector('input');
+    const btn1 = document.querySelector('.btn1');
+    const btn2 = document.querySelector('.btn2');
+    const topMessage = document.querySelector('.user');
+    btn1.addEventListener('click', function () {
+        let id = 'player_' + Math.floor(Date.now() * Math.random());
+        socket.emit('new player', id, user.value);
+        user.style.display = 'none';
+        btn1.style.display = 'none';
+        btn2.style.display = 'block';
+        topMessage.textContent = 'Player:' + user.value;
+    })
+    btn2.addEventListener('click', function () {
+        socket.emit('roll');
+        btn2.disabled = true;
+    })
+    socket.on('players', listPlayers);
+    socket.on('inplay', checkwinner);
+
+    function checkwinner(data) {
+        message.innerHTML = data;
+        btn2.disabled = false;
+    }
+
+    function listPlayers(players) {
+        message.textContent = players.length > 0 ? `Round ${players[0].round}` : `First round 0`;
+        output.innerHTML = 'players :';
+        players.forEach(function (player) {
+            let div = document.createElement('div');
+            let temp = player.roll == null ? 'waiting' : 'Roll:' + player.roll;
+            div.textContent = `${player.name} roll = ${temp}`;
+            div.style.color = player.winner ? 'green' : 'black';
+            output.appendChild(div);
+        })
+    }
+</script>
